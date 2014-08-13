@@ -64,10 +64,11 @@ class Docx extends AbstractOpenXML
         // Prevent php from loading remote resources
         $loadEntities = libxml_disable_entity_loader(true);
 
+        $relations = simplexml_load_string($relationsXml);
+
         // Restore entity loader state
         libxml_disable_entity_loader($loadEntities);
 
-        $relations = simplexml_load_string($relationsXml);
         foreach($relations->Relationship as $rel) {
             if ($rel ["Type"] == AbstractOpenXML::SCHEMA_OFFICEDOCUMENT) {
                 // Found office document! Read in contents...
