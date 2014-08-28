@@ -87,7 +87,7 @@ class HTML extends Document
             $htmlData = $data;
         }
         ErrorHandler::start(E_WARNING);
-        $this->_doc->loadHTML($htmlData);
+        $this->_doc = XmlSecurity::scan($htmlData, $this->_doc);
         ErrorHandler::stop();
 
         if ($this->_doc->encoding === null) {
@@ -100,9 +100,9 @@ class HTML extends Document
                 $htmlTagOffset = $matches[0][1] + strlen($matches[0][0]);
 
                 ErrorHandler::start(E_WARNING);
-                $this->_doc->loadHTML(iconv($defaultEncoding, 'UTF-8//IGNORE', substr($htmlData, 0, $htmlTagOffset))
+                $this->_doc = XmlSecurity::scan(iconv($defaultEncoding, 'UTF-8//IGNORE', substr($htmlData, 0, $htmlTagOffset))
                                      . '<head><META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8"/></head>'
-                                     . iconv($defaultEncoding, 'UTF-8//IGNORE', substr($htmlData, $htmlTagOffset)));
+                                     . iconv($defaultEncoding, 'UTF-8//IGNORE', substr($htmlData, $htmlTagOffset)), $this->_doc);
                 ErrorHandler::stop();
 
                 // Remove additional HEAD section
@@ -112,9 +112,10 @@ class HTML extends Document
             } else {
                 // It's an HTML fragment
                 ErrorHandler::start(E_WARNING);
-                $this->_doc->loadHTML('<html><head><META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8"/></head><body>'
+                $this->_doc = XmlSecurity::scan('<html><head><META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8"/></head><body>'
                                      . iconv($defaultEncoding, 'UTF-8//IGNORE', $htmlData)
-                                     . '</body></html>');
+                                     . '</body></html>', $this->_doc);
+
                 ErrorHandler::stop();
             }
 
@@ -314,10 +315,9 @@ class HTML extends Document
             // into valid XHTML (It's automatically done by loadHTML() method)
             $highlightedWordNodeSetDomDocument = new \DOMDocument('1.0', 'UTF-8');
             ErrorHandler::start(E_WARNING);
-            $success = $highlightedWordNodeSetDomDocument->
-                                loadHTML('<html><head><meta http-equiv="Content-type" content="text/html; charset=UTF-8"/></head><body>'
+            $success = XmlSecurity::scan('<html><head><meta http-equiv="Content-type" content="text/html; charset=UTF-8"/></head><body>'
                                        . $highlightedWordNodeSetHTML
-                                       . '</body></html>');
+                                       . '</body></html>', $highlightedWordNodeSetDomDocument);
             ErrorHandler::stop();
             if (!$success) {
                 throw new RuntimeException("Error occured while loading highlighted text fragment: '$highlightedWordNodeSetHTML'.");
