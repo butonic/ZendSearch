@@ -16,6 +16,7 @@ use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Exception\InvalidArgumentException;
 use ZendSearch\Lucene\Exception\RuntimeException;
 use Zend\Stdlib\ErrorHandler;
+use ZendXml\Security as XMLSecurity;
 
 /**
  * HTML document.
