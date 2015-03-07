@@ -47,7 +47,7 @@ abstract class AbstractOpenXML extends Document
      *
      * @var string
      */
-    const SCHEMA_COREPROPERTIES = 'http://schemas.openxmlformats.org/package/2006/metadata/core-properties';
+    const SCHEMA_COREPROPERTIES = 'http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties';
 
     /**
      * Xml Schema - Dublin Core
